@@ -14,6 +14,7 @@ require 'exifr'
 
 @found_count = 0
 @rename_count = 0
+@skip_count = 0
 @error_count = 0
 
 def valid_photo(filename)
@@ -32,12 +33,16 @@ def exifdater(photo_dir)
         photo_base = photo_dir + File::SEPARATOR
         photo_file = photo_base + photo
         photo_stamp = EXIFR::JPEG.new(photo_file).date_time.strftime("%Y%m%d_%H%M%S")
-        
-        begin
-          File.rename(photo_file, photo_base + photo_stamp + '-' + photo)
-          @rename_count += 1
-        rescue
-          @error_count += 1
+
+        if File.fnmatch(photo_stamp + '*', photo)
+          @skip_count += 1
+        else
+          begin
+            File.rename(photo_file, photo_base + photo_stamp + '-' + photo)
+            @rename_count += 1
+          rescue
+            @error_count += 1
+          end
         end
       end
     end
@@ -52,9 +57,13 @@ if ARGV[0].nil?
 else
   exifdater(ARGV[0])
   puts "\nLet's go marking dates in photos..."
-  puts @found_count.to_s + " photos found"
-  puts @rename_count.to_s + " photos renamed"
+  puts @found_count.to_s + " found"
+  puts @rename_count.to_s + " renamed"
   
+  if @skip_count > 0
+    puts @skip_count.to_s + " skipped, date already in filename"
+  end
+
   if @error_count > 0
     puts @error_count.to_s + " photos could not be renamed"
   end
