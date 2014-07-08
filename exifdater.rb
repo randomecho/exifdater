@@ -32,16 +32,20 @@ def exifdater(photo_dir)
         @found_count += 1
         photo_base = photo_dir + File::SEPARATOR
         photo_file = photo_base + photo
-        photo_stamp = EXIFR::JPEG.new(photo_file).date_time.strftime("%Y%m%d_%H%M%S")
+        photo_taken = EXIFR::JPEG.new(photo_file).date_time
 
-        if File.fnmatch(photo_stamp + '*', photo)
-          @skip_count += 1
-        else
-          begin
-            File.rename(photo_file, photo_base + photo_stamp + '-' + photo)
-            @rename_count += 1
-          rescue
+        unless photo_taken.nil?
+          photo_stamp = photo_taken.strftime("%Y%m%d_%H%M%S")
+
+          if File.fnmatch(photo_stamp + '*', photo)
+            @skip_count += 1
+          else
+            begin
+              File.rename(photo_file, photo_base + photo_stamp + '-' + photo)
+              @rename_count += 1
+            rescue
             @error_count += 1
+            end
           end
         end
       end
