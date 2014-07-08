@@ -47,6 +47,8 @@ def exifdater(photo_dir)
             @error_count += 1
             end
           end
+          else
+            @error_count += 1
         end
       end
     end
