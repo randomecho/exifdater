@@ -32,7 +32,7 @@ def exifdater(photo_dir)
         @found_count += 1
         photo_base = photo_dir + File::SEPARATOR
         photo_file = photo_base + photo
-        photo_taken = EXIFR::JPEG.new(photo_file).date_time
+        photo_taken = EXIFR::JPEG.new(photo_file).date_time_original
 
         unless photo_taken.nil?
           photo_stamp = photo_taken.strftime("%Y%m%d_%H%M%S")
