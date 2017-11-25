@@ -75,6 +75,11 @@ def exifdater(photo_dir)
         @found_count += 1
 
         rename_photo(photo, photo_dir)
+      end
+    end
+
+    Dir.foreach(photo_dir) do |photo|
+      if valid_photo(photo)
         remove_date_modified(photo, photo_dir)
       end
     end
