@@ -18,11 +18,7 @@ require 'exifr'
 @error_count = 0
 
 def valid_photo(filename)
-  if File.extname(filename).downcase.match(/\.jpe?g/)
-    return true
-  else
-    return false
-  end
+  return File.extname(filename).downcase.match(/\.jpe?g/)
 end
 
 def rename_photo(photo, photo_dir)
