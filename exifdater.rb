@@ -25,31 +25,36 @@ def valid_photo(filename)
   end
 end
 
+def rename_photo(photo, photo_dir)
+  photo_base = photo_dir + File::SEPARATOR
+  photo_file = photo_base + photo
+  photo_taken = EXIFR::JPEG.new(photo_file).date_time_original
+  photo_modified = EXIFR::JPEG.new(photo_file).date_time
+
+  unless photo_taken.nil?
+    photo_stamp = photo_taken.strftime("%Y%m%d_%H%M%S")
+
+    if File.fnmatch(photo_stamp + '*', photo)
+      @skip_count += 1
+    else
+      begin
+        File.rename(photo_file, photo_base + photo_stamp + '-' + photo)
+        @rename_count += 1
+      rescue
+      @error_count += 1
+      end
+    end
+  else
+    @error_count += 1
+  end
+end
+
 def exifdater(photo_dir)
   if File.directory?(photo_dir)
     Dir.foreach(photo_dir) do |photo|
       if valid_photo(photo)
         @found_count += 1
-        photo_base = photo_dir + File::SEPARATOR
-        photo_file = photo_base + photo
-        photo_taken = EXIFR::JPEG.new(photo_file).date_time_original
-
-        unless photo_taken.nil?
-          photo_stamp = photo_taken.strftime("%Y%m%d_%H%M%S")
-
-          if File.fnmatch(photo_stamp + '*', photo)
-            @skip_count += 1
-          else
-            begin
-              File.rename(photo_file, photo_base + photo_stamp + '-' + photo)
-              @rename_count += 1
-            rescue
-            @error_count += 1
-            end
-          end
-          else
-            @error_count += 1
-        end
+        rename_photo(photo, photo_dir)
       end
     end
   end
