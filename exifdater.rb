@@ -20,13 +20,13 @@ require 'exifr'
 
 def cleanup_filenames_with_date_modified(photo_dir)
   Dir.foreach(photo_dir) do |photo|
-    if valid_photo(photo)
+    if is_valid_photo(photo)
       remove_date_modified(photo, photo_dir)
     end
   end
 end
 
-def valid_photo(filename)
+def is_valid_photo(filename)
   return File.extname(filename).downcase.match(/\.jpe?g/)
 end
 
@@ -79,7 +79,7 @@ end
 def exifdater(photo_dir)
   if File.directory?(photo_dir)
     Dir.foreach(photo_dir) do |photo|
-      if valid_photo(photo)
+      if is_valid_photo(photo)
         @found_count += 1
 
         rename_photo(photo, photo_dir)
