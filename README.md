@@ -4,6 +4,12 @@ Runs through a folder and prepends all photo filenames with its taken date and
 time according to the Exif data. The heavy lifting is done by the exifr gem.
 This is just a hitch for it.
 
+## Setup
+
+Need to add the execute bit permission:
+
+    $ chmod +x exifdater.rb
+
 ## Usage
 
     $ exifdater.rb path/to/photos
