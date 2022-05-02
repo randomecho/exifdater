@@ -10,7 +10,7 @@
 #
 #  $ exifdater.rb path/to/photos
 
-require 'exifr'
+require 'exifr/jpeg'
 
 @found_count = 0
 @rename_count = 0
